@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+
+    "name": "csTimer Syncer",
+    "description": "This extension syncs csTimer sessions across machines",
+    "version": "1.0",
+
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "tabs",
+        "storage",
+        "http://*.cstimer.net/*"
+    ]
+}

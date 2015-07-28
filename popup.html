@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>csTimer Syncer</title>
+    <script src="popup.js"></script>
+    <style>
+        body {
+            width: 200px;
+            background-color: lightgray;
+        }
+
+        #controls {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        #status {
+            text-align: center;
+            font-size: 15px;
+        }
+
+        button {
+            font-size: 100%;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>csTimer Session Syncer</h2>
+
+    <div id="status"></div>
+
+    <div id="controls">
+        <button type="button" id="saveBtn">Save Session</button>
+        <button type="button" id="loadBtn">Load Session</button>
+        <button type="button" id="removeBtn">Clear Saved Session</button>
+    </div>
+</body>
+</html>
