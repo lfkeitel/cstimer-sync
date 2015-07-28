@@ -25,15 +25,26 @@ function saveLocalStorage(data) {
     }, function(tabs) {
         if (tabs.length) {
             var tab = tabs[0];
+            var code = '';
 
-            var code = 'localStorage.setItem("properties",JSON.stringify('+data.properties+'));';
+            // Sets the session select element to session 15
+            // An updated localStorage value won't take affect if
+            // the session is currently selected. I figure session 15
+            // would rarely be used and is safe to basically ignore.
+            code += "var element = document.getElementsByTagName('select')[2];";
+            code += "element.value = '15';";
+            code += "var evt = document.createEvent('HTMLEvents');";
+            code += "evt.initEvent('change', false, true);";
+            code += "element.dispatchEvent(evt);";
+
+            code += 'localStorage.setItem("properties", JSON.stringify('+data.properties+'));';
 
             // Currently there are 15 sessions
             for (var i = 1; i <= 15; i++) {
-                code += 'localStorage.setItem("session'+i+'",JSON.stringify('+data['session'+i]+'));';
+                code += 'localStorage.setItem("session'+i+'", JSON.stringify('+data['session'+i]+'));';
             }
 
-            code += "location.reload();"
+            code += "location.reload();";
 
             chrome.tabs.executeScript(tab.id, {
                 code: code
