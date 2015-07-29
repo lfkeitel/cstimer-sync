@@ -1,12 +1,47 @@
+var csTimerUrlPatterns = [
+    "*://*.cstimer.net/timer.php",
+    "*://*.cstimer.net/timer.php?*",
+    "*://cstimer.net/timer.php",
+    "*://cstimer.net/timer.php?*"
+];
+
+var dataKeys = [
+    "cts-props",
+    "cts-sess1",
+    "cts-sess2",
+    "cts-sess3",
+    "cts-sess4",
+    "cts-sess5",
+    "cts-sess6",
+    "cts-sess7",
+    "cts-sess8",
+    "cts-sess9",
+    "cts-sess10",
+    "cts-sess11",
+    "cts-sess12",
+    "cts-sess13",
+    "cts-sess14",
+    "cts-sess15",
+    "cts-save-time"
+];
+
 function renderStatus(message) {
     document.getElementById("status").innerHTML = message;
+}
+
+function setErrorMessage(message) {
+    document.getElementById("errorMsg").innerHTML = message;
+}
+
+function clearErrorMessage() {
+    setErrorMessage('');
 }
 
 function getLocalStorage() {
     chrome.tabs.query({
         active: true,
         currentWindow: true,
-        url: "http://*.cstimer.net/timer.php"
+        url: csTimerUrlPatterns
     }, function(tabs) {
         if (tabs.length) {
             var tab = tabs[0];
@@ -21,7 +56,7 @@ function saveLocalStorage(data) {
     chrome.tabs.query({
         active: true,
         currentWindow: true,
-        url: "http://*.cstimer.net/timer.php"
+        url: csTimerUrlPatterns
     }, function(tabs) {
         if (tabs.length) {
             var tab = tabs[0];
@@ -37,11 +72,11 @@ function saveLocalStorage(data) {
             code += "evt.initEvent('change', false, true);";
             code += "element.dispatchEvent(evt);";
 
-            code += 'localStorage.setItem("properties", JSON.stringify('+data.properties+'));';
+            code += 'localStorage.setItem("properties", JSON.stringify('+data['cts-props']+'));';
 
             // Currently there are 15 sessions
             for (var i = 1; i <= 15; i++) {
-                code += 'localStorage.setItem("session'+i+'", JSON.stringify('+data['session'+i]+'));';
+                code += 'localStorage.setItem("session'+i+'", JSON.stringify('+data['cts-sess'+i]+'));';
             }
 
             code += "location.reload();";
@@ -49,7 +84,7 @@ function saveLocalStorage(data) {
             chrome.tabs.executeScript(tab.id, {
                 code: code
             }, function() {
-                renderStatus('Session loaded');
+                renderStatus('Data loaded');
                 window.close();
             });
         }
@@ -57,9 +92,14 @@ function saveLocalStorage(data) {
 }
 
 function saveSessionToSyncedStorage(data) {
-    chrome.storage.sync.set({"cstimer-data": data}, function() {
+    clearErrorMessage();
+    // data = {cts-props: ..., cts-sess[1-15]: ....}
+    var d = new Date();
+    data["cts-save-time"] = d.toLocaleString();
+    chrome.storage.sync.set(data, function() {
         if (chrome.runtime.lastError) {
-            renderStatus("There was an error saving data to Chrome Sync");
+            renderStatus("Error saving data");
+            setErrorMessage(chrome.runtime.lastError.message);
         } else {
             renderStatus("Session saved");
         }
@@ -67,39 +107,44 @@ function saveSessionToSyncedStorage(data) {
 }
 
 function getSessionFromSyncedStorage() {
-    chrome.storage.sync.get("cstimer-data", function(data) {
-        if (data['cstimer-data']) {
-            saveLocalStorage(data['cstimer-data']);
+    clearErrorMessage();
+    chrome.storage.sync.get(dataKeys, function(data) {
+        if (data["cts-save-time"]) {
+            saveLocalStorage(data);
         }
     });
 }
 
 function displaySavedSessionExists() {
-    chrome.storage.sync.get("cstimer-data", function(data) {
-        if (data['cstimer-data']) {
-            renderStatus("Saved session exists");
+    clearErrorMessage();
+    chrome.storage.sync.get(dataKeys, function(data) {
+        if (data["cts-save-time"]) {
+            renderStatus('<br>Last saved on '+data["cts-save-time"]);
         } else {
-            renderStatus("No session data");
+            renderStatus("No data");
         }
     });
 }
 
 function clearSessionFromSyncedStorage() {
+    // cstimer-data is from old version
+    // This line will be removed in version 1
     chrome.storage.sync.remove("cstimer-data");
-    displaySavedSessionExists();
+    chrome.storage.sync.remove(dataKeys);
+    renderStatus("Data cleared");
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
     document.getElementById("saveBtn").addEventListener("click", getLocalStorage);
     document.getElementById("loadBtn").addEventListener("click", getSessionFromSyncedStorage);
     document.getElementById("removeBtn").addEventListener("click", clearSessionFromSyncedStorage);
 
+    // When getting the data from csTimer, it's sent in a message
     chrome.runtime.onMessage.addListener(
         function(request, sender, sendResponse) {
-            console.log(request);
             saveSessionToSyncedStorage(request);
         }
     );
 
     displaySavedSessionExists();
-});
+})();
