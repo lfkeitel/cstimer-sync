@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "csTimer Sync",
     "description": "This extension syncs csTimer sessions across machines",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "icons": {
         "48": "icon48.png",
         "128": "icon128.png"
