@@ -9,24 +9,24 @@ Release Notes
 -------------
 
 0.2.0
-=====
+-----
 
 - Supports csTimer version 2015.8.3
     - Custom number of sessions above 15
 
 0.1.2
-=====
+-----
 
 - Support large session data
     - Fixed a bug where the data was larger than the size limit of an item in Chrome Sync Storage
-    
+
 0.1.1
-=====
+-----
 
 - First attempt of fixing large session data bug
     - Obviously it didn't help much
 
 0.1.0
-=====
+-----
 
 - Initial release
