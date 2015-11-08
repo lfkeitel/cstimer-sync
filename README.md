@@ -1,7 +1,7 @@
 csTimer Sync
-------------
+============
 
-csTimer Sync is a Chrome extension that will save, sync, and restore data for the csTimer web application. Data is saved to Chrome Sync and available to any instance of Chrome where your signed in.
+csTimer Sync is a Chrome extension that will save, sync, and restore data for the csTimer web application. Data is saved to Chrome Sync and available to any instance of Chrome where you're signed in.
 
 csTimer Sync syncs all data including all session data and preferences. It doesn't work automatically. You're in complete control of when to save and restore data.
 
