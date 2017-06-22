@@ -1,65 +1,68 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <title>csTimer Sync</title>
-        <style>
-            body {
-                width: 300px;
-                background-color: lightgray;
-            }
 
-            h2 {
-                text-align: center;
-            }
+<head>
+    <title>csTimer Sync</title>
+    <style>
+        body {
+            width: 300px;
+            background-color: lightgray;
+        }
 
-            #controls {
-                text-align: center;
-                font-size: 20px;
-            }
+        h2 {
+            text-align: center;
+        }
 
-            #status {
-                text-align: center;
-                font-size: 15px;
-            }
+        #controls {
+            text-align: center;
+            font-size: 20px;
+        }
 
-            #statusLabel {
-                font-weight: bold;
-                font-size: 16px;
-            }
+        #status {
+            text-align: center;
+            font-size: 15px;
+        }
 
-            #errorMsg {
-                margin: 10px 0;
-            }
+        #statusLabel {
+            font-weight: bold;
+            font-size: 16px;
+        }
 
-            button {
-                font-size: 100%;
-                margin: 7px 0;
-                padding: 5px;
-            }
+        #errorMsg {
+            margin: 10px 0;
+        }
 
-            footer {
-                text-align: center;
-            }
-        </style>
-    </head>
-    <body>
-        <h2>csTimer Data Sync</h2>
+        button {
+            font-size: 100%;
+            margin: 7px 0;
+            padding: 5px;
+        }
 
-        <span id="statusLabel">Status:</span> <span id="status">Loading</span>
+        footer {
+            text-align: center;
+        }
+    </style>
+</head>
 
-        <div id="errorMsg"></div>
+<body>
+    <h2>csTimer Data Sync</h2>
 
-        <div id="controls">
-            <button type="button" id="saveBtn">Save Data</button>
-            <button type="button" id="loadBtn">Load Data</button>
-            <button type="button" id="removeBtn">Clear Data</button>
-        </div>
+    <span id="statusLabel">Status:</span> <span id="status">Loading</span>
 
-        <footer>
-            csTimer Sync | Version 0.2.0<br>Onesimus Computer Systems
-        </footer>
+    <div id="errorMsg"></div>
 
-        <script src="popup.js"></script>
-    </body>
+    <div id="controls">
+        <button type="button" id="saveBtn">Save Data</button>
+        <button type="button" id="loadBtn">Load Data</button>
+        <button type="button" id="removeBtn">Clear Data</button>
+    </div>
+
+    <footer>
+        csTimer Sync | Version 0.2.1<br>Onesimus Computer Systems
+    </footer>
+
+    <script src="popup.js"></script>
+</body>
+
 </html>
