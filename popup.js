@@ -1,8 +1,7 @@
 var csTimerUrlPatterns = [
     "*://*.cstimer.net/timer.php",
     "*://*.cstimer.net/timer.php?*",
-    "*://cstimer.net/timer.php",
-    "*://cstimer.net/timer.php?*"
+    "*://cstimer.net/*"
 ];
 
 var numberOfcsTimerSessions;
@@ -51,12 +50,12 @@ function saveToLocalStorage(data) {
             var tab = tabs[0];
             var code = '';
 
-            code += 'localStorage.setItem("properties", '+JSON.stringify(data['cts-props'])+');';
-            code += 'localStorage.setItem("cts-save-time", "'+data['cts-save-time']+'");';
+            code += 'localStorage.setItem("properties", ' + JSON.stringify(data['cts-props']) + ');';
+            code += 'localStorage.setItem("cts-save-time", "' + data['cts-save-time'] + '");';
 
             for (var i = 1; i <= numberOfcsTimerSessions; i++) {
-                if (typeof data['cts-sess'+i] !== "undefined") {
-                    code += 'localStorage.setItem("session'+i+'", '+JSON.stringify(data['cts-sess'+i])+');';
+                if (typeof data['cts-sess' + i] !== "undefined") {
+                    code += 'localStorage.setItem("session' + i + '", ' + JSON.stringify(data['cts-sess' + i]) + ');';
                 }
             }
 
@@ -65,7 +64,7 @@ function saveToLocalStorage(data) {
             chrome.tabs.executeScript(tab.id, {
                 code: code
             }, function() {
-                renderStatus('Data loaded ('+numberOfcsTimerSessions+' sessions)');
+                renderStatus('Data loaded (' + numberOfcsTimerSessions + ' sessions)');
                 window.close();
             });
         }
@@ -84,7 +83,7 @@ function saveDataToSyncedStorage(data) {
             renderStatus("Error saving data");
             setErrorMessage(chrome.runtime.lastError.message);
         } else {
-            renderStatus("Data saved ("+numberOfcsTimerSessions+" sessions)");
+            renderStatus("Data saved (" + numberOfcsTimerSessions + " sessions)");
         }
     });
 }
@@ -97,7 +96,7 @@ function prepareDataForStorage(data) {
 
     // Go over each session and break it into manageable and saveable chunks
     for (var i = 1; i <= numberOfcsTimerSessions; i++) {
-        var sessionName = "cts-sess"+i;
+        var sessionName = "cts-sess" + i;
         var sessionParts = {};
         var sessionString = data[sessionName];
         var numOfParts = 0;
@@ -117,16 +116,16 @@ function prepareDataForStorage(data) {
 
             // Break up string into x parts
             for (var j = 1; j <= numOfParts; j++) {
-                sessionParts[sessionName+"-"+j] = sessionString.substring((j-1)*itemStorageLimit, (j*itemStorageLimit));
+                sessionParts[sessionName + "-" + j] = sessionString.substring((j - 1) * itemStorageLimit, (j * itemStorageLimit));
             }
 
             // Save metadata about session
-            sessionParts[sessionName+"-0"] = {
+            sessionParts[sessionName + "-0"] = {
                 parts: numOfParts
             };
         } else {
             // If the string is "[]" then it's empty, no point in wasting ~14 bytes
-            sessionParts[sessionName+"-0"] = {
+            sessionParts[sessionName + "-0"] = {
                 parts: 0
             };
         }
@@ -165,7 +164,7 @@ function getDataFromSyncedStorage() {
             }
 
             for (var i = 1; i <= numberOfcsTimerSessions; i++) {
-                sessionKeys.push("cts-sess"+i+"-0");
+                sessionKeys.push("cts-sess" + i + "-0");
             }
 
             // This gets the session metadata given the number of sessions in the properties
@@ -174,10 +173,10 @@ function getDataFromSyncedStorage() {
                 var sessionsToSplice = [];
                 // Loop through session to see for which ones we need to get data
                 for (i = 1; i <= numberOfcsTimerSessions; i++) {
-                    var parts = sessionData["cts-sess"+i+"-0"].parts;
+                    var parts = sessionData["cts-sess" + i + "-0"].parts;
                     if (parts > 0) {
                         for (var j = 1; j <= parts; j++) {
-                            sessionPartsToGet.push("cts-sess"+i+"-"+j);
+                            sessionPartsToGet.push("cts-sess" + i + "-" + j);
                         }
                         sessionsToSplice.push([i, parts]);
                     }
@@ -192,10 +191,10 @@ function getDataFromSyncedStorage() {
 
                         // Splice everything back together
                         for (var j = 1; j <= parts; j++) {
-                            splicedString += sessParts["cts-sess"+sessionID+"-"+j];
+                            splicedString += sessParts["cts-sess" + sessionID + "-" + j];
                         }
 
-                        loadedData["cts-sess"+sessionID] = splicedString;
+                        loadedData["cts-sess" + sessionID] = splicedString;
                     }
 
                     // Load the newly spliced data
@@ -210,7 +209,7 @@ function displaySavedDataExists() {
     clearErrorMessage();
     chrome.storage.sync.get(dataKeys, function(data) {
         if (data["cts-save-time"]) {
-            renderStatus('<br>Last saved on '+data["cts-save-time"]);
+            renderStatus('<br>Last saved on ' + data["cts-save-time"]);
         } else {
             renderStatus("No data");
         }
